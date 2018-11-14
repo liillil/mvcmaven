@@ -1,0 +1,108 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>cn.java.mvcproject</groupId>
+	<artifactId>mvcmaven</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
+
+
+	<dependencies>
+		<dependency>
+			<groupId>com.mchange</groupId>
+			<artifactId>c3p0</artifactId>
+			<version>0.9.5.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+			<version>1.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.47</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.taglibs</groupId>
+			<artifactId>taglibs-standard-impl</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.taglibs</groupId>
+			<artifactId>taglibs-standard-spec</artifactId>
+			<version>1.2.5</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.3.1</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<!-- 将mvcmaven项目打包成mvcmaven.war自动部署到tomcat服务器的webapps目录下面 -->
+	<build><!-- 配置构建的标签 -->
+		<!-- 配置一个名字，意义：cargo插件，发布到tomcat容器的webapps下工程名，打包war包mvcmaven.war,然后添加到tomcat容器里 -->
+		<finalName>mvcmaven</finalName>
+		<plugins><!-- 配置插件组 -->
+			<plugin><!-- 配置具体插件 -->
+				<!-- 下面三行，cargo插件的坐标(中央仓库) -->
+				<groupId>org.codehaus.cargo</groupId><!-- 开发组织 -->
+				<artifactId>cargo-maven2-plugin</artifactId><!-- cargo名字 -->
+				<version>1.6.7</version><!-- 版本号 -->
+				
+				
+				<configuration><!-- 使用的cargo这个插件，需要的初始的信息 -->
+					<container><!-- 告诉cargo插件，本的Tomcat容器安装目录 -->
+						<containerId>tomcat8x</containerId><!-- 自己取得名字 -->
+						<home>C:\Program Files\Apache Software Foundation\Tomcat 8.0</home>
+					</container>
+					
+					<configuration>
+						<type>existing</type><!-- cargo插件部署web工程的模式 -->
+						<home>C:\Program Files\Apache Software Foundation\Tomcat 8.0</home>
+						<properties>
+							<!-- 更改监听端口 默认的是8080 -->
+							<cargo.servlet.port>80</cargo.servlet.port>
+						</properties>
+					</configuration>	
+				</configuration>
+				
+				
+				<!-- cargo插件执行的阶段配置，cargo插件伴随maven的阶段命令，一起执行 goal：设置的内容就是跟随Maven一起执行的命令-->
+				<executions>
+					<execution>
+						<id>cargo-run</id><!-- 执行id 自己取的名字 -->
+						<phase>install</phase><!-- compile、test、package、install、deploy 执行阶段（maven生命周期）-->
+						<goals>
+							<goal>run</goal><!-- 即当maven工程执行到install阶段时cargo插件的cargo：run命令执行 -->
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+
+	<distributionManagement>
+	  	<repository> <!-- id必须与settings.xml中的Id相同 -->
+	  		<id>nexus-snapshots</id>
+	  		<name>Nexus Snapshots Repository</name>
+	  		<url>http://localhost:8081/nexus/content/repositories/snapshots</url>
+	  	</repository>
+	 </distributionManagement>
+
+</project>
